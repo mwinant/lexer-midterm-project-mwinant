@@ -11,12 +11,15 @@
 
 //strcpy will be helpful for this assignment
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
 //Function Headers
-
+bool isKeyword(FILE *fp);
 
 
 
