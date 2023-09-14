@@ -7,14 +7,9 @@
 int main(int argc, char *argv[] ) //argc is the argument count. 
 
 {
-    char keyword[]={"accessor," "and," "array," "begin," "bool," "case," "character," "constant,"
-                "else," "elseif," "end," "exit," "function," "if," "in," "integer," "interface,"
-                "is," "loop," "module," "mutator," "natural," "null," "of," "or," "other," "out,"
-                "positive," "procedure," "range," "return," "struct," "subtype," "then," "type," "when," "while"};
-
     FILE *fp;
     char *filename;
-    char ch;
+    //char ch;
     // Check if a filename has been specified in the command
     if (argc < 2)
     {
@@ -26,6 +21,8 @@ int main(int argc, char *argv[] ) //argc is the argument count.
         filename = argv[1];
         printf("Filename : %s\n", filename);
     }
+    //char file[50]="files/";
+    //string cat strcat();
     //open file
     //TODO change directory to folders
     fp = fopen(filename,"r"); //"r" means read only
@@ -35,19 +32,41 @@ int main(int argc, char *argv[] ) //argc is the argument count.
         printf( "Error opening file\n" );
         exit(1);
     }
-    //Get size of file for memory allocation
+    //Get size of file 
     fseek(fp, 0, SEEK_END);
     size_t size=ftell(fp);
     fseek(fp, 0, SEEK_SET);
-    //Allocate memory
-    char *array=malloc(size*sizeof(char)+1); //plus 1 to add null terminator
-    ch = fgetc(fp);
-    fread(array, 1, size, fp); //read file into array
-    array[size]='\0'; //added null terminator to array
-    printf("%s", array); //print array
+    // //Allocate memory
+    char *ptr=NULL;
+    ptr=malloc(size*sizeof(char)+1); //plus 1 to add null terminator
+    
+    fread(ptr, 1, size, fp); //read file into ptr
+    ptr[size]='\0'; //added null terminator to ptr
+    //printf("%s", ptr); //print ptr
+
+    for(int i=0; i<size; i++)
+    {
+        if((ptr)[i]=='/') //looking for comments
+        {
+            if(ptr[i+1]=='*')
+            {
+                int comment=isComment(ptr, size, i+2); //isComment searches for end of comment
+                if(comment!=-1) //if end of comment is found
+                {
+                    i=comment; //i becomes next char after end of comment
+                }
+            }
+            if(ptr[i+1]!='*')
+            {
+                //check if it is an operator
+            }
+        }
+        
+    }
 
     //close file
     fclose( fp );
+    free(ptr);
     return 0;
 }
  //char *token=strtok(fp, " ");

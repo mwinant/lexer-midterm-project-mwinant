@@ -12,6 +12,25 @@
 #include "functions.h"
 
 //Function Definitions
+int isComment(char arr[], int size, int start){
+{
+    for (int i= start; i< size; i++) //start=next char after /*
+    {
+        if (arr[i] == '*'&& arr[i+1]=='/'){
+            int beginning=start-2; //beginning equals beginning of comment (starting with '/')
+            int end=i+1; //end=the last '/' in comment
+            while(beginning<=end)
+            {
+                printf("%c", arr[beginning]);
+                beginning++;
+            }
+            printf(" (comment)\n");
+            return end+1; //position of i after comment
+        }
+    }
+    return -1;
+}  
+}
 bool isKeyword(FILE *fp)
 {
     char keyword[]={"accessor," "and," "array," "begin," "bool," "case," "character," "constant,"
@@ -21,7 +40,7 @@ bool isKeyword(FILE *fp)
 
     int i;
     for(i = 0; i < 32; ++i){
-       // if(strcmp(keyword[i], fp) == 0){
+       // if(strcmp(keyword[i], fp) == 0){ //0 ==false
         return true;
         break;
         }

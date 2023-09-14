@@ -19,6 +19,7 @@
 #define FUNCTIONS_H
 
 //Function Headers
+int isComment(char arr[], int size, int start);
 bool isKeyword(FILE *fp);
 
 
