@@ -61,12 +61,17 @@ int main(int argc, char *argv[] ) //argc is the argument count.
         int operator=isOperator(ptr, size, i); //looking for operators
         if(operator!=-1)
         {
-            i=operator; //i becomes next char after operator
+            i=operator;
         }
-        int numeric=isNumericLiteral(ptr, i);
+        int numeric=isNumber(ptr, i);
         if(numeric!=-1)
         {
             i=numeric;
+        }
+        int string=isString(ptr, i);
+        if(string!=-1)
+        {
+            i=string;
         }
         // int keyword=isKeyword(ptr, i); //looking for keyword
         // if(keyword!=-1)

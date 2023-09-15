@@ -31,6 +31,25 @@ int isComment(char arr[], int size, int start){
     return -1;
 }  
 }
+int isString(char arr[], int position)
+{
+    int end=position+1;
+    if(arr[position]=='"')
+    {
+        while(arr[end]!='"')
+        {
+            end++;
+        }
+        for(int i=position; i<=end; i++)
+        {
+            printf("%c", arr[i]);
+        }
+        printf(" (string)\n");
+        return end;
+
+    }
+    return -1;
+}
 int isOperator(char arr[], int size, int position) //do I need size?
 {
     int i=position;
@@ -92,58 +111,54 @@ int isOperator(char arr[], int size, int position) //do I need size?
         }
     return -1;
 }
-int isNumericLiteral(char arr[], int position)
+int isNumber(char arr[], int position)
 {
-    int end=-1;
-    if(isdigit(arr[position])!=0) //if digit is found at first char
+    int i=position;
+    if(arr[i]>='0'&& arr[i]<='9') //if first element is a number 0-9
     {
-        for(int i=position; i<10; i++)
+        while(arr[i]>='0'&& arr[i]<='9') //while loop for numbers
         {
-            while(isdigit(arr[i])!=0) //while a digit is found
+            i++;
+        }
+        if(arr[i]=='.'|| arr[i]== '#') //after leaving while loop if '.' or '#' is found
+        {
+            if(arr[i+1]=='.') //if there are two . found in a row
             {
-                i++;
-            }
-            if(arr[i]!='.'|| arr[i]!='#') //if element after digit isnt a '.' or a '#
-            {
-                end=i-1; //end = last digit
-                for(int x=position; x<=end; x++)
+                for(int x=position; x<i; x++) //printing array
                 {
-                    printf("%c", arr[x]); //print array of digits found
-
+                    printf("%c", arr[x]); //print array
                 }
                 printf(" (numeric)\n");
-                return end; //return next char
-
+                return i-1;
             }
-            else if(arr[i]== '.'|| arr[i]=='#')
+            i++;
+            while(arr[i]>='0'&& arr[i]<='9') //if there is a digit found
             {
                 i++;
-                while(isdigit(arr[i]!=0)) //while a digit is found after a '. or '#
-                {
-                    i++;
-
-                }
-                if(arr[i]!='#'){ //if a # is not found after last digit
-                {
-                    end=i-1;
-                    for(int x=position; x<=end; x++)
-                    {
-                        printf("%c", arr[x]); //print array of digits found
-                    }
-                    printf(" (numeric)\n");
-                    return end; //return next char
-                }
-                
-                }
             }
+    
+            for(int x=position; x<i; x++) //printing array
+            {
+                printf("%c", arr[x]); //print array
+            }
+            printf(" (numeric)\n");
+            return i;
+        }
+        else{
+        for(int x=position; x<i; x++) //if we have found the end of the numeric string
+        {
+            printf("%c", arr[x]); //print array
+        }
+        printf(" (numeric)\n");
+        return i;
+
         }
     }
     return -1;
 }
 
-
-int isKeyword(char arr[], int position)
-{
+// int isKeyword(char arr[], int position)
+// {
     // char *keyword[]={"accessor," "and," "array," "begin," "bool," "case," "character," "constant,"
     //             "else," "elseif," "end," "exit," "function," "if," "in," "integer," "interface,"
     //             "is," "loop," "module," "mutator," "natural," "null," "of," "or," "other," "out,"
@@ -184,7 +199,7 @@ int isKeyword(char arr[], int position)
 
     // }
     // return -1;
-}
+// /}
 
 
 
