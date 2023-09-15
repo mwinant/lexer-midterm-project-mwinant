@@ -56,11 +56,23 @@ int main(int argc, char *argv[] ) //argc is the argument count.
                     i=comment; //i becomes next char after end of comment
                 }
             }
-            if(ptr[i+1]!='*')
-            {
-                //check if it is an operator
-            }
+
         }
+        int operator=isOperator(ptr, size, i); //looking for operators
+        if(operator!=-1)
+        {
+            i=operator; //i becomes next char after operator
+        }
+        int numeric=isNumericLiteral(ptr, i);
+        if(numeric!=-1)
+        {
+            i=numeric;
+        }
+        // int keyword=isKeyword(ptr, i); //looking for keyword
+        // if(keyword!=-1)
+        // {
+        //     i=keyword; //i becomes next char after keyword
+        // }
         
     }
 

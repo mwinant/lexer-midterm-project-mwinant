@@ -14,13 +14,16 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
 //Function Headers
 int isComment(char arr[], int size, int start);
-bool isKeyword(FILE *fp);
+int isOperator(char arr[], int size, int position);
+int isKeyword(char arr[], int position);
+int isNumericLiteral(char arr[], int position);
 
 
 
