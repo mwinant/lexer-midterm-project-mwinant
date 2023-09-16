@@ -20,10 +20,11 @@ int main(int argc, char *argv[] ) //argc is the argument count.
         filename = argv[1];
         printf("Filename : %s\n", filename);
     }
-    //char file[50]="files/";
-    //string cat strcat();
+    char file[50]="files/";
+    char *newFile=strcat(file, filename);
+
     //open file
-    fp = fopen(filename,"r"); //"r" means read only
+    fp = fopen(newFile,"r"); //"r" means read only
     //if file does not open       
     if (!fp)
     {
