@@ -9,7 +9,6 @@ int main(int argc, char *argv[] ) //argc is the argument count.
 {
     FILE *fp;
     char *filename;
-    //char ch;
     // Check if a filename has been specified in the command
     if (argc < 2)
     {
@@ -24,7 +23,6 @@ int main(int argc, char *argv[] ) //argc is the argument count.
     //char file[50]="files/";
     //string cat strcat();
     //open file
-    //TODO change directory to folders
     fp = fopen(filename,"r"); //"r" means read only
     //if file does not open       
     if (!fp)
@@ -44,42 +42,7 @@ int main(int argc, char *argv[] ) //argc is the argument count.
     ptr[size]='\0'; //added null terminator to ptr
     //printf("%s", ptr); //print ptr
 
-    for(int i=0; i<size; i++)
-    {
-        if((ptr)[i]=='/') //looking for comments
-        {
-            if(ptr[i+1]=='*')
-            {
-                int comment=isComment(ptr, size, i+2); //isComment searches for end of comment
-                if(comment!=-1) //if end of comment is found
-                {
-                    i=comment; //i becomes next char after end of comment
-                }
-            }
-
-        }
-        int operator=isOperator(ptr, size, i); //looking for operators
-        if(operator!=-1)
-        {
-            i=operator;
-        }
-        int numeric=isNumber(ptr, i);
-        if(numeric!=-1)
-        {
-            i=numeric;
-        }
-        int string=isString(ptr, i);
-        if(string!=-1)
-        {
-            i=string;
-        }
-        int word=getWord(ptr, i);
-        if(word!=-1)
-        {
-            i=word;
-        }
-        
-    }
+    search(ptr, size); //search ptr for operators, keywords, etc and display them
 
     //close file
     fclose( fp );

@@ -22,11 +22,11 @@
 //Function Headers
 int isComment(char arr[], int size, int start);
 int isOperator(char arr[], int size, int position);
-//int isKeyword(char arr[], int position);
-//int isNumericLiteral(char arr[], int position);
+int isidentifier(char arr[], int position);
 int isString(char arr[], int position);
 int isNumber(char arr[], int position);
-int getWord(char arr[], int position);
+int isKeyword(char arr[], int position);
+void search(char ptr[], int size);
 
 
 

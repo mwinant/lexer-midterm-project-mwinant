@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/main",
-            "args": ["test.cci"],
+            "args": ["widget.cci"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

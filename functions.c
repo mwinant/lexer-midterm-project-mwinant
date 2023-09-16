@@ -12,6 +12,83 @@
 #include "functions.h"
 
 //Function Definitions
+void search(char ptr[], int size)
+{
+
+    for(int i=0; i<size; i++)
+    {
+        int commentFound=0; //0 means false
+        int operatorFound=0;
+        int keywordFound=0;
+        int stringFound=0;
+        int numericFound=0;
+        int identifierFound=0;
+
+        if((ptr)[i]=='/') //looking for comments
+        {
+            if(ptr[i+1]=='*')
+            {
+                int comment=isComment(ptr, size, i+2); //isComment searches for end of comment
+                if(comment!=-1) //if end of comment is found
+                {
+                    i=comment; //i becomes next char after end of comment
+                    commentFound=1;
+                }
+            }
+
+        }
+        if(commentFound==0) //if comment was not found
+        {
+            int operator=isOperator(ptr, size, i); //looking for operators
+            if(operator!=-1)
+            {
+                i=operator;
+                operatorFound=1;
+            }
+
+        }
+        if(commentFound==0 && operatorFound==0) //if both comment and operator weren't found
+        {
+            int numeric=isNumber(ptr, i);
+            if(numeric!=-1)
+            {
+                i=numeric;
+                numericFound=1;
+            }
+
+        }
+        if(commentFound==0 && operatorFound==0 && numericFound==0)
+        {
+            int string=isString(ptr, i);
+            if(string!=-1)
+            {
+                i=string;
+                stringFound=1;
+            }
+        }
+        if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0)
+        {
+            int keyword=isKeyword(ptr, i);
+            if(keyword!=-1)
+            {
+                i=keyword;
+                keywordFound=1;
+            }
+
+        }
+        if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0 && keywordFound==0)
+        {
+            int identifier=isidentifier(ptr, i);
+            if(identifier!=-1)
+            {
+                i=identifier;
+                identifierFound=1;
+            }
+        }
+        
+    }
+
+}
 int isComment(char arr[], int size, int start){
 {
     for (int i= start; i< size; i++) //start=next char after /*
@@ -156,8 +233,30 @@ int isNumber(char arr[], int position)
     }
     return -1;
 }
+int isidentifier(char arr[], int position)
+{
+    //isalpha tests if element is a letter. returns 0 if false
 
-int getWord(char arr[], int position)
+    if(isalpha(arr[position])!=0)
+    {
+        for(int i=position; i<position+20; i++)
+        {
+            if(arr[i]==' ' || arr[i]==';' || arr[i]=='(' || arr[i]==')' || arr[i]==':') //if end of identifier is found
+            {
+                for(int x=position; x<i; x++)
+                {
+                    printf("%c", arr[x]);
+                }
+                printf(" (identifier)\n");
+                return i-1;
+            }
+        }
+    }
+    return -1;
+
+}
+
+int isKeyword(char arr[], int position)
 {
     if(arr[position]=='b' && arr[position+1]=='e'&& arr[position+2]=='g' && arr[position+3]=='i' && arr[position+4]=='n') //begin
     {
@@ -236,7 +335,8 @@ int getWord(char arr[], int position)
         printf(" (keyword)\n");
         return position+7; 
     }
-    else if(arr[position]=='e' && arr[position+1]=='l'&& arr[position+2]=='s' && arr[position+3]=='e' && arr[position+4]=='i' && arr[position+5]=='f') //elseif
+    else if(arr[position]=='e' && arr[position+1]=='l'&& arr[position+2]=='s' && 
+    arr[position+3]=='e' && arr[position+4]=='i' && arr[position+5]=='f') //elseif
     {
         for(int i=position; i<=position+5; i++)
         {
@@ -434,7 +534,7 @@ int getWord(char arr[], int position)
         printf(" (keyword)\n");
         return position+3; 
     }
-    else if(arr[position]=='t' && arr[position+1]=='y'&& arr[position+2]=='p' && arr[position+3]=='e') //type
+    else if(arr[position-1]==' ' && arr[position]=='t'&& arr[position+1]=='y' && arr[position+2]=='p' && arr[position+3]=='e') //type
     {
         for(int i=position; i<=position+3; i++)
         {
