@@ -73,11 +73,11 @@ int main(int argc, char *argv[] ) //argc is the argument count.
         {
             i=string;
         }
-        // int keyword=isKeyword(ptr, i); //looking for keyword
-        // if(keyword!=-1)
-        // {
-        //     i=keyword; //i becomes next char after keyword
-        // }
+        int word=getWord(ptr, i);
+        if(word!=-1)
+        {
+            i=word;
+        }
         
     }
 
