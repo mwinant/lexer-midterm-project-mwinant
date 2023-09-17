@@ -12,17 +12,24 @@
 #include "functions.h"
 
 //Function Definitions
+/**
+ * @brief goes through each element in array calling 
+ * isOperator, isKeyword, isNumber, isString, isComment functions
+ * 
+ * 
+ * @param ptr 
+ * @param size 
+ */
 void search(char ptr[], int size)
 {
 
     for(int i=0; i<size; i++)
     {
-        int commentFound=0; //0 means false
+        int commentFound=0; //setting Found variables to false
         int operatorFound=0;
         int keywordFound=0;
         int stringFound=0;
         int numericFound=0;
-        int identifierFound=0;
 
         if((ptr)[i]=='/') //looking for comments
         {
@@ -39,56 +46,64 @@ void search(char ptr[], int size)
         }
         if(commentFound==0) //if comment was not found
         {
-            int operator=isOperator(ptr, size, i); //looking for operators
+            int operator=isOperator(ptr, i); //looking for operators
             if(operator!=-1)
             {
-                i=operator;
+                i=operator; //i is moved to correct position in array
                 operatorFound=1;
             }
 
         }
-        if(commentFound==0 && operatorFound==0) //if both comment and operator weren't found
+        if(commentFound==0 && operatorFound==0) //if both comment and operator aren't found
         {
             int numeric=isNumber(ptr, i);
             if(numeric!=-1)
             {
-                i=numeric;
+                i=numeric; //i is moved to correct position in array
                 numericFound=1;
             }
 
         }
-        if(commentFound==0 && operatorFound==0 && numericFound==0)
+        if(commentFound==0 && operatorFound==0 && numericFound==0) //if comment, operator, and number aren't found
         {
             int string=isString(ptr, i);
             if(string!=-1)
             {
-                i=string;
+                i=string; //i is moved to correct position in array
                 stringFound=1;
             }
         }
-        if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0)
+        if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0) 
+        //if comment, operator, and number, and string aren't found
         {
             int keyword=isKeyword(ptr, i);
             if(keyword!=-1)
             {
-                i=keyword;
+                i=keyword; //i is moved to correct position in array
                 keywordFound=1;
             }
 
         }
         if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0 && keywordFound==0)
+        //if comment, operator, and number,string, and keyword aren't found
         {
             int identifier=isidentifier(ptr, i);
             if(identifier!=-1)
             {
-                i=identifier;
-                identifierFound=1;
+                i=identifier; //i is moved to correct position in array
             }
         }
         
     }
-
 }
+/**
+ * @brief beginning of comment has been found, this function looks for the end of the comment
+ * 
+ * @param arr 
+ * @param size 
+ * @param start 
+ * @return int position of last element in comment
+ */
 int isComment(char arr[], int size, int start){
 {
     for (int i= start; i< size; i++) //start=next char after /*
@@ -108,6 +123,14 @@ int isComment(char arr[], int size, int start){
     return -1;
 }  
 }
+/**
+ * @brief checks element in array for " . if found, the function finds the next 
+ * " and prints the string
+ * 
+ * @param arr 
+ * @param position 
+ * @return int position of last element of string
+ */
 int isString(char arr[], int position)
 {
     int end=position+1;
@@ -122,12 +145,20 @@ int isString(char arr[], int position)
             printf("%c", arr[i]);
         }
         printf(" (string)\n");
-        return end;
+        return end; //return position of last element in string "
 
     }
     return -1;
 }
-int isOperator(char arr[], int size, int position) //do I need size?
+/**
+ * @brief checks element in array for an operator
+ * prints operator if found
+ * 
+ * @param arr 
+ * @param position 
+ * @return int 
+ */
+int isOperator(char arr[], int position)
 {
     int i=position;
 
@@ -188,6 +219,14 @@ int isOperator(char arr[], int size, int position) //do I need size?
         }
     return -1;
 }
+/**
+ * @brief checks if element in array is a number, if so, it looks for the next non number 
+ * character and stops unless it is a '.' or '#'
+ * 
+ * @param arr 
+ * @param position 
+ * @return int 
+ */
 int isNumber(char arr[], int position)
 {
     int i=position;
@@ -205,7 +244,7 @@ int isNumber(char arr[], int position)
                 {
                     printf("%c", arr[x]); //print array
                 }
-                printf(" (numeric)\n");
+                printf(" (numeric literal)\n");
                 return i-1;
             }
             i++;
@@ -233,6 +272,14 @@ int isNumber(char arr[], int position)
     }
     return -1;
 }
+/**
+ * @brief checks if first element in array is a letter, if so
+ * it prints until space or certain operator is reached
+ * 
+ * @param arr 
+ * @param position 
+ * @return int 
+ */
 int isidentifier(char arr[], int position)
 {
     //isalpha tests if element is a letter. returns 0 if false
@@ -241,7 +288,7 @@ int isidentifier(char arr[], int position)
     {
         for(int i=position; i<position+20; i++)
         {
-            if(arr[i]==' ' || arr[i]==';' || arr[i]=='(' || arr[i]==')' || arr[i]==':') //if end of identifier is found
+            if(arr[i]==' ' || arr[i]==';' || arr[i]=='(' || arr[i]==')' || arr[i]==':' ||arr[i]==',') //if end of identifier is found
             {
                 for(int x=position; x<i; x++)
                 {
@@ -255,7 +302,14 @@ int isidentifier(char arr[], int position)
     return -1;
 
 }
-
+/**
+ * @brief searches array for keyword. if found, 
+ * print keyword and return position of last letter in keyword
+ * 
+ * @param arr 
+ * @param position 
+ * @return int 
+ */
 int isKeyword(char arr[], int position)
 {
     if(arr[position]=='b' && arr[position+1]=='e'&& arr[position+2]=='g' && arr[position+3]=='i' && arr[position+4]=='n') //begin
@@ -621,8 +675,3 @@ int isKeyword(char arr[], int position)
         return -1;
     }
 }
-
-
-
-
-

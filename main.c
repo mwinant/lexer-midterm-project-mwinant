@@ -18,7 +18,6 @@ int main(int argc, char *argv[] ) //argc is the argument count.
     else
     {
         filename = argv[1];
-        printf("Filename : %s\n", filename);
     }
     char file[50]="files/";
     char *newFile=strcat(file, filename);
