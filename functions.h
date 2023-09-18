@@ -15,17 +15,18 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdarg.h>
 
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
 //Function Headers
-int isComment(char arr[], int size, int start);
-int isOperator(char arr[], int position);
-int isidentifier(char arr[], int position);
-int isString(char arr[], int position);
-int isNumber(char arr[], int position);
-int isKeyword(char arr[], int position);
-void search(char ptr[], int size);
+int isComment(char arr[], int size, int start, FILE** file);
+int isOperator(char arr[], int position, FILE** file);
+int isidentifier(char arr[], int position, FILE **file);
+int isString(char arr[], int position, FILE **file);
+int isNumber(char arr[], int position, FILE** file);
+int isKeyword(char arr[], int position, FILE ** file);
+void search(char ptr[], int size, FILE** file);
 
 #endif

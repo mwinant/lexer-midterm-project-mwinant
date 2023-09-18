@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdarg.h>
 #include "functions.h"
 
 int main(int argc, char *argv[] ) //argc is the argument count. 
 
 {
-    FILE *fp;
+    FILE *fp; //file for reading
+    FILE *answerFile; //file for writing
     char *filename;
     // Check if a filename has been specified in the command
     if (argc < 2)
@@ -19,15 +21,21 @@ int main(int argc, char *argv[] ) //argc is the argument count.
     {
         filename = argv[1];
     }
-    char file[50]="files/";
-    char *newFile=strcat(file, filename);
-
-    //open file
-    fp = fopen(newFile,"r"); //"r" means read only
+    //opening file
+    fp = fopen(filename,"r"); //"r" means read only
     //if file does not open       
     if (!fp)
     {
-        printf( "Error opening file\n" );
+        printf("Error opening file\n");
+        exit(1);
+    }
+
+    char file[50]=".lexer";
+    char *newFile=strcat(filename, file);
+    answerFile = fopen(newFile, "w"); // write only
+    if (!answerFile)
+    {
+        printf( "Error opening answer file\n" );
         exit(1);
     }
     //Get size of file 
@@ -42,10 +50,10 @@ int main(int argc, char *argv[] ) //argc is the argument count.
     ptr[size]='\0'; //added null terminator to ptr
     //printf("%s", ptr); //print ptr
 
-    search(ptr, size); //search ptr for operators, keywords, etc and display them
+    search(ptr, size, &answerFile); //search ptr for operators, keywords, etc and write to answer file
 
     //close file
-    fclose( fp );
+    fclose(fp);
     free(ptr);
     return 0;
 }

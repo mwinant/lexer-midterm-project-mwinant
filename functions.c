@@ -11,18 +11,16 @@
 
 #include "functions.h"
 
-//Function Definitions
+//Function Definition
 /**
- * @brief goes through each element in array calling 
- * isOperator, isKeyword, isNumber, isString, isComment functions
- * 
+ * @brief Search
  * 
  * @param ptr 
  * @param size 
+ * @param file 
  */
-void search(char ptr[], int size)
+void search(char ptr[], int size, FILE** file)
 {
-
     for(int i=0; i<size; i++)
     {
         int commentFound=0; //setting Found variables to false
@@ -35,7 +33,7 @@ void search(char ptr[], int size)
         {
             if(ptr[i+1]=='*')
             {
-                int comment=isComment(ptr, size, i+2); //isComment searches for end of comment
+                int comment=isComment(ptr, size, i+2, file); //isComment searches for end of comment
                 if(comment!=-1) //if end of comment is found
                 {
                     i=comment; //i becomes next char after end of comment
@@ -46,7 +44,7 @@ void search(char ptr[], int size)
         }
         if(commentFound==0) //if comment was not found
         {
-            int operator=isOperator(ptr, i); //looking for operators
+            int operator=isOperator(ptr, i, file); //looking for operators
             if(operator!=-1)
             {
                 i=operator; //i is moved to correct position in array
@@ -56,7 +54,7 @@ void search(char ptr[], int size)
         }
         if(commentFound==0 && operatorFound==0) //if both comment and operator aren't found
         {
-            int numeric=isNumber(ptr, i);
+            int numeric=isNumber(ptr, i, file);
             if(numeric!=-1)
             {
                 i=numeric; //i is moved to correct position in array
@@ -66,7 +64,7 @@ void search(char ptr[], int size)
         }
         if(commentFound==0 && operatorFound==0 && numericFound==0) //if comment, operator, and number aren't found
         {
-            int string=isString(ptr, i);
+            int string=isString(ptr, i, file);
             if(string!=-1)
             {
                 i=string; //i is moved to correct position in array
@@ -76,7 +74,7 @@ void search(char ptr[], int size)
         if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0) 
         //if comment, operator, and number, and string aren't found
         {
-            int keyword=isKeyword(ptr, i);
+            int keyword=isKeyword(ptr, i, file);
             if(keyword!=-1)
             {
                 i=keyword; //i is moved to correct position in array
@@ -87,7 +85,7 @@ void search(char ptr[], int size)
         if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0 && keywordFound==0)
         //if comment, operator, and number,string, and keyword aren't found
         {
-            int identifier=isidentifier(ptr, i);
+            int identifier=isidentifier(ptr, i, file);
             if(identifier!=-1)
             {
                 i=identifier; //i is moved to correct position in array
@@ -104,7 +102,7 @@ void search(char ptr[], int size)
  * @param start 
  * @return int position of last element in comment
  */
-int isComment(char arr[], int size, int start){
+int isComment(char arr[], int size, int start, FILE **file){
 {
     for (int i= start; i< size; i++) //start=next char after /*
     {
@@ -113,10 +111,10 @@ int isComment(char arr[], int size, int start){
             int end=i+1; //end=the last '/' in comment
             while(beginning<=end)
             {
-                printf("%c", arr[beginning]);
+                fprintf(*file, "%c",arr[beginning]);
                 beginning++;
             }
-            printf(" (comment)\n");
+            fprintf(*file, " (comment)\n");
             return end+1; //position of i after comment
         }
     }
@@ -131,7 +129,7 @@ int isComment(char arr[], int size, int start){
  * @param position 
  * @return int position of last element of string
  */
-int isString(char arr[], int position)
+int isString(char arr[], int position, FILE **file)
 {
     int end=position+1;
     if(arr[position]=='"')
@@ -142,9 +140,9 @@ int isString(char arr[], int position)
         }
         for(int i=position; i<=end; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (string)\n");
+        fprintf(*file," (string)\n");
         return end; //return position of last element in string "
 
     }
@@ -158,62 +156,62 @@ int isString(char arr[], int position)
  * @param position 
  * @return int 
  */
-int isOperator(char arr[], int position)
+int isOperator(char arr[], int position, FILE **file)
 {
     int i=position;
 
         if(arr[i]==':'&& arr[i+1]=='=')
         {
-            printf("%c%c", arr[i], arr[i+1]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c%c", arr[i], arr[i+1]);
+            fprintf(*file," (operator)\n");
             return i+1; //next position of char
 
         }
         else if(arr[i]=='*'&& arr[i+1]=='*')
         {
-            printf("%c%c", arr[i], arr[i+1]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c%c", arr[i], arr[i+1]);
+            fprintf(*file," (operator)\n");
             return i+1; //next position of char
         }
         else if(arr[i]=='.' && arr[i+1]=='.')
         {
-            printf("%c%c", arr[i], arr[i+1]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c%c", arr[i], arr[i+1]);
+            fprintf(*file," (operator)\n");
             return i+1; //next position of char
 
         }
         else if(arr[i]== '=' && arr[i+1]== '>')
         {
-            printf("%c%c", arr[i], arr[i+1]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c%c", arr[i], arr[i+1]);
+            fprintf(*file," (operator)\n");
             return i+1; //next position of char
         }
         else if(arr[i]== '<' && (arr[i+1]=='<' || arr[i+1]== '='|| arr[i+1]== '>'))
         {
-            printf("%c%c", arr[i], arr[i+1]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c%c", arr[i], arr[i+1]);
+            fprintf(*file," (operator)\n");
             return i+1; //next position of char
 
         }
         else if(arr[i]== '>' && (arr[i+1]=='>' || arr[i+1]== '='))
         {
-            printf("%c%c", arr[i], arr[i+1]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c%c", arr[i], arr[i+1]);
+            fprintf(*file," (operator)\n");
             return i+1; //next position of char
 
         }
         else if(arr[i]=='!' && arr[i+1]=='=')
         {
-            printf("%c%c", arr[i], arr[i+1]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c%c", arr[i], arr[i+1]);
+            fprintf(*file," (operator)\n");
             return i+1; //next position of char
         }
         else if(arr[i]=='(' ||arr[i]==')' ||arr[i]=='+' ||arr[i]=='-' ||arr[i]=='/' ||arr[i]=='|' 
         ||arr[i]=='&' ||arr[i]==';' ||arr[i]==',' ||arr[i]=='[' ||arr[i]==']' || arr[i]== ':' ||
         arr[i]== '*'|| arr[i]== '.' ||arr[i]== '=' || arr[i]=='<' || arr[i]== '>')
         {
-            printf("%c", arr[i]);
-            printf(" (operator)\n");
+            fprintf(*file,"%c", arr[i]);
+            fprintf(*file," (operator)\n");
             return i;
 
         }
@@ -227,7 +225,7 @@ int isOperator(char arr[], int position)
  * @param position 
  * @return int 
  */
-int isNumber(char arr[], int position)
+int isNumber(char arr[], int position, FILE **file)
 {
     int i=position;
     if(arr[i]>='0'&& arr[i]<='9') //if first element is a number 0-9
@@ -242,9 +240,9 @@ int isNumber(char arr[], int position)
             {
                 for(int x=position; x<i; x++) //printing array
                 {
-                    printf("%c", arr[x]); //print array
+                    fprintf(*file,"%c", arr[x]); //print array
                 }
-                printf(" (numeric literal)\n");
+                fprintf(*file," (numeric literal)\n");
                 return i-1;
             }
             i++;
@@ -255,17 +253,17 @@ int isNumber(char arr[], int position)
     
             for(int x=position; x<i; x++) //printing array
             {
-                printf("%c", arr[x]); //print array
+                fprintf(*file,"%c", arr[x]); //print array
             }
-            printf(" (numeric)\n");
+            fprintf(*file," (numeric)\n");
             return i;
         }
         else{
         for(int x=position; x<i; x++) //if we have found the end of the numeric string
         {
-            printf("%c", arr[x]); //print array
+            fprintf(*file,"%c", arr[x]); //print array
         }
-        printf(" (numeric)\n");
+        fprintf(*file," (numeric)\n");
         return i;
 
         }
@@ -280,7 +278,7 @@ int isNumber(char arr[], int position)
  * @param position 
  * @return int 
  */
-int isidentifier(char arr[], int position)
+int isidentifier(char arr[], int position, FILE **file)
 {
     //isalpha tests if element is a letter. returns 0 if false
 
@@ -292,9 +290,9 @@ int isidentifier(char arr[], int position)
             {
                 for(int x=position; x<i; x++)
                 {
-                    printf("%c", arr[x]);
+                    fprintf(*file,"%c", arr[x]);
                 }
-                printf(" (identifier)\n");
+                fprintf(*file," (identifier)\n");
                 return i-1;
             }
         }
@@ -310,15 +308,15 @@ int isidentifier(char arr[], int position)
  * @param position 
  * @return int 
  */
-int isKeyword(char arr[], int position)
+int isKeyword(char arr[], int position, FILE **file)
 {
     if(arr[position]=='b' && arr[position+1]=='e'&& arr[position+2]=='g' && arr[position+3]=='i' && arr[position+4]=='n') //begin
     {
         for(int i=position; i<=position+4; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+4;
     }
     else if(arr[position]=='a' && arr[position+1]=='c'&& arr[position+2]=='c' && arr[position+3]=='e' && arr[position+4]=='s' &&arr[position+5]=='s'
@@ -326,27 +324,27 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+7; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+7;
     }
     else if(arr[position]=='a' && arr[position+1]=='n'&& arr[position+2]=='d') //and
     {
         for(int i=position; i<=position+2; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+2;
     }
     else if(arr[position]=='a' && arr[position+1]=='r'&& arr[position+2]=='r' && arr[position+3]=='a' && arr[position+4]=='y') //array
     {
         for(int i=position; i<=position+4; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+4;
 
     }
@@ -354,9 +352,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3;  
 
     }
@@ -364,9 +362,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
     }
     else if(arr[position]=='c' && arr[position+1]=='h'&& arr[position+2]=='a' && arr[position+3]=='r' && arr[position+4]=='a' &&arr[position+5]=='c'
@@ -374,9 +372,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+8; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+8; 
     }
     else if(arr[position]=='c' && arr[position+1]=='o'&& arr[position+2]=='n' && arr[position+3]=='s' && arr[position+4]=='t' &&arr[position+5]=='a'
@@ -384,9 +382,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+7; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+7; 
     }
     else if(arr[position]=='e' && arr[position+1]=='l'&& arr[position+2]=='s' && 
@@ -394,9 +392,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+5; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+5; 
 
     }
@@ -404,9 +402,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
 
     }
@@ -414,18 +412,18 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+2; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+2; 
     }
     else if(arr[position]=='e' && arr[position+1]=='x'&& arr[position+2]=='i' && arr[position+3]=='t') //exit
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
 
     }
@@ -434,9 +432,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+7; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+7; 
     }
     else if(arr[position]=='i' && arr[position+1]=='n'&& arr[position+2]=='t' && arr[position+3]=='e' && arr[position+4]=='g' &&arr[position+5]=='e'
@@ -444,9 +442,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+6; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+6; 
     }
     else if(arr[position]=='i' && arr[position+1]=='n'&& arr[position+2]=='t' && arr[position+3]=='e' && arr[position+4]=='r' &&arr[position+5]=='f'
@@ -454,18 +452,18 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+8; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+8; 
     }
     else if(arr[position]=='l' && arr[position+1]=='o'&& arr[position+2]=='o' && arr[position+3]=='p') //loop
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
 
     }
@@ -474,9 +472,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+5; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+5; 
     }
     else if(arr[position]=='m' && arr[position+1]=='u'&& arr[position+2]=='t' && arr[position+3]=='a' && arr[position+4]=='t' &&arr[position+5]=='o'
@@ -484,9 +482,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+6; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+6; 
     }
     else if(arr[position]=='n' && arr[position+1]=='a'&& arr[position+2]=='t' && arr[position+3]=='u' && arr[position+4]=='r' &&arr[position+5]=='a'
@@ -494,18 +492,18 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+6; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+6; 
     }
     else if(arr[position]=='n' && arr[position+1]=='u'&& arr[position+2]=='l' && arr[position+3]=='l') //null
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
 
     }
@@ -513,9 +511,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+2; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+2; 
 
     }
@@ -524,9 +522,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+4; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+4; 
     }
     else if(arr[position]=='p' && arr[position+1]=='o'&& arr[position+2]=='s' && arr[position+3]=='i' && arr[position+4]=='t' &&arr[position+5]=='i'
@@ -534,9 +532,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+7; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+7; 
     }
     else if(arr[position]=='p' && arr[position+1]=='r'&& arr[position+2]=='o' && arr[position+3]=='c' && arr[position+4]=='e' &&arr[position+5]=='d'
@@ -544,9 +542,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+8; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+8; 
     }
     else if(arr[position]=='r' && arr[position+1]=='a'&& arr[position+2]=='n' && arr[position+3]=='g' 
@@ -554,9 +552,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+4; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+4; 
     }
     else if(arr[position]=='s' && arr[position+1]=='t'&& arr[position+2]=='r' && arr[position+3]=='u' 
@@ -564,9 +562,9 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+5; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+5; 
     }
     else if(arr[position]=='r' && arr[position+1]=='e'&& arr[position+2]=='t' && arr[position+3]=='u' 
@@ -574,45 +572,45 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+5; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+5; 
     }
     else if(arr[position]=='t' && arr[position+1]=='h'&& arr[position+2]=='e' && arr[position+3]=='n') //then
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
     }
     else if(arr[position-1]==' ' && arr[position]=='t'&& arr[position+1]=='y' && arr[position+2]=='p' && arr[position+3]=='e') //type
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
     }
     else if(arr[position]=='w' && arr[position+1]=='h'&& arr[position+2]=='e' && arr[position+3]=='n') //when
     {
         for(int i=position; i<=position+3; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+3; 
     }
     else if(arr[position]=='w' && arr[position+1]=='h'&& arr[position+2]=='i' && arr[position+3]=='l' && arr[position+4]=='e') //while
     {
         for(int i=position; i<=position+4; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+4; 
     }
     else if(arr[position]=='s' && arr[position+1]=='u'&& arr[position+2]=='b' && arr[position+3]=='t' && arr[position+4]=='y'
@@ -620,54 +618,54 @@ int isKeyword(char arr[], int position)
     {
         for(int i=position; i<=position+6; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+6; 
     }
     else if(arr[position]=='i' && arr[position+1]=='f') //if
     {
         for(int i=position; i<=position+1; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+1; 
     }
     else if(arr[position]=='o' && arr[position+1]=='f') //of
     {
         for(int i=position; i<=position+1; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+1; 
     }
     else if(arr[position]=='o' && arr[position+1]=='r') //or
     {
         for(int i=position; i<=position+1; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+1; 
     }
     else if(arr[position]=='i' && arr[position+1]=='s') //is
     {
         for(int i=position; i<=position+1; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+1; 
     }
     else if(arr[position]=='i' && arr[position+1]=='s') //in
     {
         for(int i=position; i<=position+1; i++)
         {
-            printf("%c", arr[i]);
+            fprintf(*file,"%c", arr[i]);
         }
-        printf(" (keyword)\n");
+        fprintf(*file," (keyword)\n");
         return position+1; 
     }
 
