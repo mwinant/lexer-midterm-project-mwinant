@@ -28,5 +28,6 @@ int isString(char arr[], int position, FILE **file);
 int isNumber(char arr[], int position, FILE** file);
 int isKeyword(char arr[], int position, FILE ** file);
 void search(char ptr[], int size, FILE** file);
+int isCharLiteral(char arr[], int position, FILE **file);
 
 #endif

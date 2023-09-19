@@ -1,0 +1,39 @@
+files/complex.cci.ANS vs. files/complex.cci.lexer
+You passed the test
+
+files/date.cci.ANS vs. files/date.cci.lexer
+You passed the test
+
+files/list.cci.ANS vs. files/list.cci.lexer
+You passed the test
+
+files/natural.cci.ANS vs. files/natural.cci.lexer
+You passed the test
+
+files/trie.cci.ANS vs. files/trie.cci.lexer
+You passed the test
+
+files/widget.cci.ANS vs. files/widget.cci.lexer
+You passed the test
+
+files/complex.ccx.ANS vs. files/complex.ccx.lexer
+You passed the test
+
+files/date.ccx.ANS vs. files/date.ccx.lexer
+You passed the test
+
+files/hello_world.ccx.ANS vs. files/hello_world.ccx.lexer
+You passed the test
+
+files/list.ccx.ANS vs. files/list.ccx.lexer
+You passed the test
+
+files/natural.ccx.ANS vs. files/natural.ccx.lexer
+You passed the test
+
+files/trie.ccx.ANS vs. files/trie.ccx.lexer
+You passed the test
+
+files/widget.ccx.ANS vs. files/widget.ccx.lexer
+You passed the test
+

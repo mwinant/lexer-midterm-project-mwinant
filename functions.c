@@ -27,6 +27,7 @@ void search(char ptr[], int size, FILE** file)
         int operatorFound=0;
         int keywordFound=0;
         int stringFound=0;
+        int characterFound=0;
         int numericFound=0;
 
         if((ptr)[i]=='/') //looking for comments
@@ -42,15 +43,14 @@ void search(char ptr[], int size, FILE** file)
             }
 
         }
-        if(commentFound==0) //if comment was not found
+        if(commentFound==0)
         {
-            int operator=isOperator(ptr, i, file); //looking for operators
+            int operator=isOperator(ptr, i, file);
             if(operator!=-1)
             {
-                i=operator; //i is moved to correct position in array
+                i=operator;
                 operatorFound=1;
             }
-
         }
         if(commentFound==0 && operatorFound==0) //if both comment and operator aren't found
         {
@@ -72,6 +72,16 @@ void search(char ptr[], int size, FILE** file)
             }
         }
         if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0) 
+        {
+            int character=isCharLiteral(ptr, i, file);
+            if(character!=-1)
+            {
+                i=character;
+                characterFound=1;
+            }
+        }
+
+        if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0 && characterFound==0) 
         //if comment, operator, and number, and string aren't found
         {
             int keyword=isKeyword(ptr, i, file);
@@ -82,7 +92,7 @@ void search(char ptr[], int size, FILE** file)
             }
 
         }
-        if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0 && keywordFound==0)
+        if(commentFound==0 && operatorFound==0 && numericFound==0 && stringFound==0 && characterFound ==0 && keywordFound==0)
         //if comment, operator, and number,string, and keyword aren't found
         {
             int identifier=isidentifier(ptr, i, file);
@@ -115,7 +125,7 @@ int isComment(char arr[], int size, int start, FILE **file){
                 beginning++;
             }
             fprintf(*file, " (comment)\n");
-            return end+1; //position of i after comment
+            return end; //position of i after comment
         }
     }
     return -1;
@@ -143,6 +153,25 @@ int isString(char arr[], int position, FILE **file)
             fprintf(*file,"%c", arr[i]);
         }
         fprintf(*file," (string)\n");
+        return end; //return position of last element in string "
+
+    }
+    return -1;
+}
+int isCharLiteral(char arr[], int position, FILE **file)
+{
+    int end=position+1;
+    if(arr[position]=='\'')
+    {
+        while(arr[end]!='\'')
+        {
+            end++;
+        }
+        for(int i=position; i<=end; i++)
+        {
+            fprintf(*file,"%c", arr[i]);
+        }
+        fprintf(*file," (character literal)\n");
         return end; //return position of last element in string "
 
     }
@@ -207,7 +236,7 @@ int isOperator(char arr[], int position, FILE **file)
             return i+1; //next position of char
         }
         else if(arr[i]=='(' ||arr[i]==')' ||arr[i]=='+' ||arr[i]=='-' ||arr[i]=='/' ||arr[i]=='|' 
-        ||arr[i]=='&' ||arr[i]==';' ||arr[i]==',' ||arr[i]=='[' ||arr[i]==']' || arr[i]== ':' ||
+        ||arr[i]=='&' ||arr[i]==';' ||arr[i]==',' ||arr[i]=='['||arr[i]== ']' || arr[i]== ':' ||
         arr[i]== '*'|| arr[i]== '.' ||arr[i]== '=' || arr[i]=='<' || arr[i]== '>')
         {
             fprintf(*file,"%c", arr[i]);
@@ -250,21 +279,25 @@ int isNumber(char arr[], int position, FILE **file)
             {
                 i++;
             }
+            if(arr[i]=='#') //if array equals # again
+            {
+                i++;
+            }
     
             for(int x=position; x<i; x++) //printing array
             {
                 fprintf(*file,"%c", arr[x]); //print array
             }
-            fprintf(*file," (numeric)\n");
-            return i;
+            fprintf(*file," (numeric literal)\n");
+            return i-1;
         }
         else{
         for(int x=position; x<i; x++) //if we have found the end of the numeric string
         {
             fprintf(*file,"%c", arr[x]); //print array
         }
-        fprintf(*file," (numeric)\n");
-        return i;
+        fprintf(*file," (numeric literal)\n");
+        return i-1;
 
         }
     }
@@ -284,9 +317,10 @@ int isidentifier(char arr[], int position, FILE **file)
 
     if(isalpha(arr[position])!=0)
     {
-        for(int i=position; i<position+20; i++)
+        for(int i=position; i<position+30; i++)
         {
-            if(arr[i]==' ' || arr[i]==';' || arr[i]=='(' || arr[i]==')' || arr[i]==':' ||arr[i]==',') //if end of identifier is found
+            if(arr[i]==' ' || arr[i]==';' || arr[i]=='(' || arr[i]==')' || arr[i]==':' ||arr[i]==',' ||arr[i]=='.' ||arr[i]=='[' ||arr[i]==']' 
+            || arr[i]=='/' || arr[i]=='>' ||arr[i]=='<') //if end of identifier is found
             {
                 for(int x=position; x<i; x++)
                 {
@@ -348,7 +382,7 @@ int isKeyword(char arr[], int position, FILE **file)
         return position+4;
 
     }
-    else if(arr[position]=='b' && arr[position+1]=='o'&& arr[position+2]=='o' && arr[position+3]=='l') //bool
+    else if(arr[position]=='b' && arr[position+1]=='o'&& arr[position+2]=='o' && arr[position+3]=='l' && arr[position+4]!='e') //bool
     {
         for(int i=position; i<=position+3; i++)
         {
@@ -388,14 +422,14 @@ int isKeyword(char arr[], int position, FILE **file)
         return position+7; 
     }
     else if(arr[position]=='e' && arr[position+1]=='l'&& arr[position+2]=='s' && 
-    arr[position+3]=='e' && arr[position+4]=='i' && arr[position+5]=='f') //elseif
+    arr[position+3]=='i' && arr[position+4]=='f') //elsif
     {
-        for(int i=position; i<=position+5; i++)
+        for(int i=position; i<=position+4; i++)
         {
             fprintf(*file,"%c", arr[i]);
         }
         fprintf(*file," (keyword)\n");
-        return position+5; 
+        return position+4; 
 
     }
     else if(arr[position]=='e' && arr[position+1]=='l'&& arr[position+2]=='s' && arr[position+3]=='e') //else
@@ -518,7 +552,7 @@ int isKeyword(char arr[], int position, FILE **file)
 
     }
     else if(arr[position]=='o' && arr[position+1]=='t'&& arr[position+2]=='h' && arr[position+3]=='e' 
-            && arr[position+4]=='r') //other
+            && arr[position+4]=='r' &&arr[position+5]!='s') //other
     {
         for(int i=position; i<=position+4; i++)
         {
@@ -650,7 +684,7 @@ int isKeyword(char arr[], int position, FILE **file)
         fprintf(*file," (keyword)\n");
         return position+1; 
     }
-    else if(arr[position]=='i' && arr[position+1]=='s') //is
+    else if(arr[position]=='i' && arr[position+1]=='s' &&arr[position+2]!='_') //is
     {
         for(int i=position; i<=position+1; i++)
         {
@@ -659,7 +693,7 @@ int isKeyword(char arr[], int position, FILE **file)
         fprintf(*file," (keyword)\n");
         return position+1; 
     }
-    else if(arr[position]=='i' && arr[position+1]=='s') //in
+    else if(arr[position]=='i' && arr[position+1]=='n' &&arr[position+2]==' ') //in
     {
         for(int i=position; i<=position+1; i++)
         {
