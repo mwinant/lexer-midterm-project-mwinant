@@ -29,9 +29,11 @@ int main(int argc, char *argv[] ) //argc is the argument count.
         printf("Error opening file\n");
         exit(1);
     }
+    char fileStart[50];
+    strcpy(fileStart, filename);
 
     char file[50]=".lexer";
-    char *newFile=strcat(filename, file);
+    char *newFile=strcat(fileStart, file);
     answerFile = fopen(newFile, "w"); // write only
     if (!answerFile)
     {
